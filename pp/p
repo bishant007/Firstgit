@@ -1,0 +1,400 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+#define MAX_ITEMS 100
+#define MAX_STRING_LEN 200
+
+
+// function to check if a string contains only digits
+int is_number(char* str) {
+    int i;
+    for (i = 0; str[i] != '\0'; i++) {
+        if (!isdigit(str[i])) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int main() {
+	
+	
+	printf("**********************************");
+	printf("\n             WELCOME             ");     
+	printf("\n**********************************");
+	
+    // define a fixed size array to store the username and password
+    char username[20], password[20];
+    
+    // define the correct username and password
+    char correct_username[] = "user1";
+    char correct_password[] = "password1";
+    
+    // ask the user to enter their username
+    printf("\n\nEnter your username: ");
+    scanf("%s", username);
+    
+    // ask the user to enter their password, showing asterisks instead of the actual characters
+    printf("Enter your password: ");
+    bool password_done = false;
+    int i = 0;
+    while (!password_done && i < 20) {
+        char c = getch();
+        if (c == '\r' || c == '\n') {
+            password_done = true;
+        } else if (c == '\b' && i > 0) {
+            printf("\b \b");
+            i--;
+            password[i] = '\0';
+        } else if (c != '\b') {
+            printf("*");
+            password[i] = c;
+            i++;
+        }
+    }
+    printf("\n");
+    
+    // if the user enters "reset" as the password, prompt them to enter a new password
+    if (strcmp(password, "reset") == 0) {
+        printf("Enter a new password: ");
+        bool new_password_done = false;
+        int j = 0;
+        while (!new_password_done && j < 20) {
+            char c = getch();
+            if (c == '\r' || c == '\n') {
+                new_password_done = true;
+            } else if (c == '\b' && j > 0) {
+                printf("\b \b");
+                j--;
+                correct_password[j] = '\0';
+            } else if (c != '\b') {
+                printf("*");
+                correct_password[j] = c;
+                j++;
+            }
+        }
+        printf("\n");
+        
+        // let the user know that their password has been updated
+        printf("Password updated. You can now log in with your new password.\n");
+        return 0;
+    }
+    
+    // compare the entered credentials with the correct ones
+    if (strcmp(username, correct_username) == 0 && strcmp(password, correct_password) == 0) {
+        // access granted
+        printf("\n\nAccess granted. Next part of the program goes here.\n");
+   
+    
+    int choice;
+    
+    while (1) {
+        printf("\n1. Add purchase item\n");
+        printf("2. Add sale item\n");
+        printf("3. Display purchase record\n");
+        printf("4. Display sales record\n");
+        printf("5. Exit\n");
+        
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+        
+        switch (choice) {
+            case 1:
+                // code to add purchase item
+                printf("You chose to add a purchase item\n");
+                
+                 // define the purchase array to hold purchase records
+    struct PurchaseRecord {
+        char item_name[MAX_STRING_LEN];
+        int quantity;
+        double price;
+        double total;
+        char purchased_from[MAX_STRING_LEN];
+        char contact[MAX_STRING_LEN];
+    } purchases[MAX_ITEMS];
+
+    int num_items = 0;
+    int stop_input = 0;
+
+ 
+    printf("\nEnter details of items purchased, and type 'STOP' in any field to finish input:\n\n");
+
+    // loop for input
+    while (1) {
+        // input item details
+        printf("Item Name: ");
+        fgets(purchases[num_items].item_name, MAX_STRING_LEN, stdin);
+        purchases[num_items].item_name[strcspn(purchases[num_items].item_name, "\n")] = 0;
+
+        if (strcmp(purchases[num_items].item_name, "STOP") == 0) {
+            stop_input = 1;
+            break;
+        }
+
+        // input quantity
+        char quantity_str[MAX_STRING_LEN];
+        while (1) {
+            printf("Quantity: ");
+            fgets(quantity_str, MAX_STRING_LEN, stdin);
+            quantity_str[strcspn(quantity_str, "\n")] = 0;
+            if (strcmp(quantity_str, "STOP") == 0) {
+                stop_input = 1;
+                break;
+            }
+            if (is_number(quantity_str)) {
+                purchases[num_items].quantity = atoi(quantity_str);
+                break;
+            } else {
+                printf("Invalid input. Please try with number.\n");
+            }
+        }
+
+        if (stop_input) {
+            break;
+        }
+
+        // input price
+        char price_str[MAX_STRING_LEN];
+        while (1) {
+            printf("Price: ");
+            fgets(price_str, MAX_STRING_LEN, stdin);
+            price_str[strcspn(price_str, "\n")] = 0;
+            if (strcmp(price_str, "STOP") == 0) {
+                stop_input = 1;
+                break;
+            }
+            if (is_number(price_str)) {
+                purchases[num_items].price = atof(price_str);
+                break;
+            } else {
+                printf("Invalid input. Please try with number.\n");
+            }
+        }
+
+        if (stop_input) {
+            break;
+        }
+
+        // calculate total price
+        purchases[num_items].total = purchases[num_items].quantity * purchases[num_items].price;
+
+        // input purchased_from and contact
+printf("Purchased From: ");
+scanf(" %[^\n]", purchases[num_items].purchased_from);
+while (getchar() != '\n'); // clear input buffer
+
+if (strcmp(purchases[num_items].purchased_from, "STOP") == 0) {
+    break;
+}
+
+printf("Contact: ");
+scanf(" %[^\n]", purchases[num_items].contact);
+while (getchar() != '\n'); // clear input buffer
+
+if (strcmp(purchases[num_items].contact, "STOP") == 0) {
+    break;
+}
+
+
+        // move to the next item
+        num_items++;
+
+        // check if maximum number of items has been reached
+        if (num_items >= MAX_ITEMS) {
+            printf("Maximum number of items reached.\n");
+            break;
+        }
+        
+        printf("\n"); // add one line gap between item details
+    }
+    
+    // open the file for writing
+FILE *fp;
+fp = fopen("purchase_record.txt", "w");
+
+if (fp == NULL) {
+    printf("Failed to open file.\n");
+    return 1;
+}
+
+// write the purchase record data to the file
+int j;
+for (j = 0; j < num_items; j++) {
+    fprintf(fp, "%d\t%s\t%d\t%.2f\t%.2f\t%s\t%s\n", j+1, purchase[j].item_name, purchase[j].quantity, purchase[j].price, purchase[j].total, purchase[j].purchase_from, purchase[j].contact);
+}
+
+// close the file
+fclose(fp);
+    
+                break;
+            case 2:
+                // code to add sale item
+                printf("You chose to add a sale item\n");
+                
+                 // define the sales array to hold sales records
+    struct SalesRecord {
+        char item_name[50];
+        int quantity;
+        double price;
+        double total;
+        char sold_to[50];
+        char contact[50];
+    } sales[MAX_ITEMS];
+
+    //int num_items = 0;
+
+    printf("\nEnter details of items sold, and type 'STOP' in any field to finish input:\n\n");
+
+    // loop for input
+    while (1) {
+        // input item details
+        printf("Item Name: ");
+        scanf("%s", sales[num_items].item_name);
+
+        if (strcmp(sales[num_items].item_name, "STOP") == 0) {
+            break;
+        }
+
+        // input quantity
+        char quantity_str[50];
+        while (1) {
+            printf("Quantity: ");
+            scanf("%s", quantity_str);
+            if (strcmp(quantity_str, "STOP") == 0) {
+                goto print_table;
+            }
+            if (is_number(quantity_str)) {
+                sales[num_items].quantity = atoi(quantity_str);
+                break;
+            } else {
+                printf("Invalid input. Please try with number.\n");
+            }
+        }
+
+        // input price
+        char price_str[50];
+        while (1) {
+            printf("Price: ");
+            scanf("%s", price_str);
+            if (strcmp(price_str, "STOP") == 0) {
+                goto print_table;
+            }
+            if (is_number(price_str)) {
+                sales[num_items].price = atof(price_str);
+                break;
+            } else {
+                printf("Invalid input. Please try with number.\n");
+            }
+        }
+
+        // calculate total price
+        sales[num_items].total = sales[num_items].quantity * sales[num_items].price;
+
+        // input sold_to and contact
+        printf("Sold To: ");
+        scanf("%s", sales[num_items].sold_to);
+        while (getchar() != '\n'); // clear input buffer
+
+
+        if (strcmp(sales[num_items].sold_to, "STOP") == 0) {
+            break;
+        }
+
+        printf("Contact: ");
+        scanf("%s", sales[num_items].contact);
+        while (getchar() != '\n'); // clear input buffer
+
+
+        if (strcmp(sales[num_items].contact, "STOP") == 0) {
+            break;
+        }
+
+        // move to the next item
+        num_items++;
+
+        // check if maximum number of items has been reached
+        if (num_items >= MAX_ITEMS) {
+            printf("Maximum number of items reached.\n");
+            break;
+        }
+        
+        printf("\n"); // add one line gap between item details
+    }
+    
+       // open the file for writing
+FILE *fp;
+fp = fopen("sales_record.txt", "w");
+
+if (fp == NULL) {
+    printf("Failed to open file.\n");
+    return 1;
+}
+
+// write the sales record data to the file
+int i;
+for (i = 0; i < num_items; i++) {
+    fprintf(fp, "%d\t%s\t%d\t%.2f\t%.2f\t%s\t%s\n", i+1, sales[i].item_name, sales[i].quantity, sales[i].price, sales[i].total, sales[i].sold_to, sales[i].contact);
+}
+
+// close the file
+fclose(fp);
+    
+                break;
+            case 3:
+                // code to display purchase record
+                printf("You chose to display purchase record\n");
+                
+                print_table:
+    // print the output table
+    printf("\n\n\nPurchase Record:\n\n");
+    printf("Item Number\tItem Name\tQuantity\tPrice\t\tTotal\t\tPurchased From\t\tContact\n");
+    double grand_total = 0;
+    int i;
+    for (i = 0; i < num_items; i++) {
+        printf("%d\t\t%s\t\t%d\t\t%.2f\t\t%.2f\t\t%s\t\t%s\n", 
+               i+1, purchases[i].item_name, purchases[i].quantity, purchases[i].price, purchases[i].total, purchases[i].purchased_from, purchases[i].contact);
+    grand_total += purchases[i].total;
+}
+printf("\nGrand Total: %.2f\n", grand_total);
+                break;
+            case 4:
+                // code to display sale record
+                printf("You chose to display sale record\n");
+                
+                print_table1:
+    // print the output table
+    printf("\n\n\nSales Record:\n\n");
+    printf("Item Number\tItem Name\tQuantity\tPrice\t\tTotal\t\tSold To\t\tContact\n");
+    double grand_total1 = 0;
+    int j;
+    for (j = 0; j < num_items; j++) {
+         printf("%d\t\t%s\t\t%d\t\t%.2f\t\t%.2f\t\t%s\t\t%s\n", 
+           i+1, sales[i].item_name, sales[i].quantity, sales[i].price, sales[i].total, sales[i].sold_to, sales[i].contact);
+    grand_total += sales[i].total;
+}
+printf("\nGrand Total: %.2f\n", grand_total);
+
+                break;
+            case 5:
+                // exit the program
+                printf("Exiting the program...\n");
+                return 0;
+            default:
+                printf("Invalid choice\n");
+                break;
+        }
+    }
+ } else {
+        // access denied
+        printf("Access denied. Incorrect username or password.\n");
+    }
+
+    
+    return 0;
+}
+
+
+//226	58	I:\Final code.c	[Note] each undeclared identifier is reported only once for each function it appears in
